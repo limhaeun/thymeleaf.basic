@@ -18,87 +18,130 @@ import java.util.Map;
 @RequestMapping("/basic")
 public class BasicController {
     @GetMapping("text-basic")
-    public String textBasic(Model model){
-        model.addAttribute("data","Hello Spring");
+    public String textBasic(Model model) {
+        model.addAttribute("data", "Hello Spring");
         return "basic/text-basic";
     }
 
     @GetMapping("text-unescaped")
-    public String textUnescaped(Model model){
-        model.addAttribute("data","Hello Spring");
+    public String textUnescaped(Model model) {
+        model.addAttribute("data", "Hello Spring");
         return "basic/text-unescaped";
     }
 
     @GetMapping("/variable")
-    public String textVariable(Model model){
-        User userA= new User("userA",10);
-        User userB= new User("userB",20);
-        List<User> list  = new ArrayList<>();
+    public String textVariable(Model model) {
+        User userA = new User("userA", 10);
+        User userB = new User("userB", 20);
+        List<User> list = new ArrayList<>();
         list.add(userA);
         list.add(userB);
 
-        Map<String, User> map= new HashMap<>();
-        map.put("userA",userA);
-        map.put("userB",userB);
+        Map<String, User> map = new HashMap<>();
+        map.put("userA", userA);
+        map.put("userB", userB);
 
         model.addAttribute("user", userA);
-        model.addAttribute("users",list);
-        model.addAttribute("userMap",map);
+        model.addAttribute("users", list);
+        model.addAttribute("userMap", map);
         return "basic/variable";
     }
+
     @Data
-    static class User{
+    static class User {
         private String username;
         private int age;
 
-        public User(String username, int age){
-            this.username=username;
-            this.age=age;
+        public User(String username, int age) {
+            this.username = username;
+            this.age = age;
         }
     }
 
     @GetMapping("/basic-objects")
-    public String basicObjects(HttpSession session){
-        session.setAttribute("seesionData","Hello Session");
+    public String basicObjects(HttpSession session) {
+        session.setAttribute("seesionData", "Hello Session");
         return "basic/basic-objects";
     }
 
     @Component("helloBean")
-    static class HelloBean{
-        public String hello(String data){
-            return "Hello"+data;
+    static class HelloBean {
+        public String hello(String data) {
+            return "Hello" + data;
         }
     }
 
     @GetMapping("/date")
-    public String date(Model model){
+    public String date(Model model) {
         model.addAttribute("localDateTime", LocalDateTime.now());
         return "basic/date";
     }
 
     @GetMapping("/link")
-    public String link(Model model){
+    public String link(Model model) {
         model.addAttribute("param1", "date1");
         model.addAttribute("param2", "date2");
         return "basic/link";
     }
 
     @GetMapping("/literal")
-    public String literal(Model model){
+    public String literal(Model model) {
         model.addAttribute("data", "Srping");
         return "basic/literal";
     }
 
     @GetMapping("/operation")
-    public String operation(Model model){
+    public String operation(Model model) {
         model.addAttribute("nullData", "null");
         model.addAttribute("data", "Spring");
         return "basic/operation";
     }
 
     @GetMapping("/attribute")
-    public String attribute(Model model){
+    public String attribute(Model model) {
         return "basic/attribute";
     }
 
+    //반복
+    @GetMapping("/each")
+    public String each(Model model) {
+        addUsers(model);
+        return "basic/each";
+    }
+
+    private void addUsers(Model model) {
+        List<User> list = new ArrayList<>();
+        list.add(new User("userA", 10));
+        list.add(new User("userB", 20));
+        list.add(new User("userC", 30));
+        model.addAttribute("users", list);
+    }
+
+    @GetMapping("/condition")
+    public String condition(Model model) {
+        addUsers(model);
+        return "basic/condition";
+    }
+
+    //주석은 html이랑 (<!---->)타임리프 주석이 있음
+    //타임리프에는는 파서 주석하고 프로토타입 주석이 있음
+    @GetMapping("comments")
+    public String comments(Model model) {
+        model.addAttribute("data", "spring");
+        return "basic/comments";
+    }
+
+    @GetMapping("block")  //타임리프의 자체 태그
+    public String block(Model model) {
+        addUsers(model);
+        return "basic/block";
+    }
+
+    @GetMapping("javascript")
+    public String javascript(Model model) {
+        //model.addAttribute("user",new User("UserA",10));
+        model.addAttribute("user", new User("\"UserA\"", 10));
+        addUsers(model);
+        return "basic/javascript";
+    }
 }
